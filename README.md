@@ -1,5 +1,5 @@
 # BSUB-X
-An InFAMOUS Subtitle format (.BSUB) Parser for unpacking and packing the game's subtitle assets. Cam be used wether for modding in-game dialogues or for extracting the whole dialogue script for viewing purposes.
+An InFAMOUS Subtitle format (.BSUB) Parser for unpacking and packing the game's subtitle assets. Can be used wether for modding in-game dialogues or for extracting the whole dialogue script for viewing purposes.
 
 ## Modding Community
 Our Discord Server: https://discord.gg/bXxWYY7t
