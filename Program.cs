@@ -6,6 +6,8 @@
  * the Free Software Foundation, either version 3 of the License...
  */
 
+//Target System: PlayStation 3 (Big Endian)
+
 
 using System;
 using System.Collections.Generic;
@@ -22,35 +24,43 @@ namespace BSUB_X
         public static int subOffset = 0x608;
         static void Main(string[] args)
         {
-            if (args.Length == 0)
+            Console.ForegroundColor = ConsoleColor.Blue;
+            if (args.Length < 2 || args.Contains("-h") || args.Contains("--help"))
             {
-                Console.WriteLine("Usage:\nbsub-x.exe -arg1 -arg2 path_to_file.bsub\n\n" +
-                    "Arg1: \n" + "   -u (Unpack into .bsubasset)\n" +
-                    "   -p (Pack into .bsub)" + "\n\n" +
-                    "Arg2 (Optional): \n     -r (Unpack in raw format)");
+                PrintHelp();
                 return;
             }
-            else if (args.Length > 1)
+            bool isRaw = args.Contains("-r");
+
+            string mode = args.First().Trim();
+            string filePath = @args.Last();
+
+            switch (mode)
             {
-                bool isRaw = false;
-                if (args.Length > 2)
-                {
-                    isRaw = args[1].Trim() == "-r";
-                }
-
-                string arg1 = args[0].Trim();
-                string filePath = @args.Last();
-
-                switch (arg1)
-                {
-                    case "-u":
-                        ExtractBSUB(filePath, isRaw);
-                        break;
-                    case "-p":
-                        PackBSUB(filePath);
-                        break;
-                }
+                case "-u":
+                    ExtractBSUB(filePath, isRaw);
+                    break;
+                case "-p":
+                    PackBSUB(filePath);
+                    break;
             }
+
+            Console.ResetColor();
+        }
+
+        static void PrintHelp()
+        {
+            Console.WriteLine("BSUB-X Parser by VZPx");
+            Console.WriteLine("------------------------------------------");
+            Console.WriteLine("Usage: bsub-x.exe <mode> [options] <path_to_file>");
+            Console.WriteLine("\nModes:");
+            Console.WriteLine("  -u          Unpack .bsub into .bsubasset");
+            Console.WriteLine("  -p          Pack .bsubasset into .bsub");
+            Console.WriteLine("\nOptions:");
+            Console.WriteLine("  -r          Enable Raw format (for Unpacking)");
+            Console.WriteLine("\nExample:");
+            Console.WriteLine(@"  bsub-x.exe -u -r ""C:\Users\...\subtitles\english\intro.bsub""");
+            Console.ResetColor();
         }
 
         static void ExtractBSUB(string filePath, bool rawExport)
@@ -110,7 +120,7 @@ namespace BSUB_X
                 {
                     sb.AppendLine($"[Entry {entryNumber}]");
                     sb.AppendLine($"Time: {entry.StartTime} - {entry.EndTime}");
-                    sb.AppendLine("Text: " + 
+                    sb.AppendLine("Text: " +
                         GetDialogueTextAt(filePath, entry.TextOffset, entry.CharacterLength));
                     sb.AppendLine("");
                     entryNumber++;
@@ -220,7 +230,7 @@ namespace BSUB_X
 
                 // Write Text
                 byte[] textData = Encoding.BigEndianUnicode.GetBytes(script);
-                writer.Write(textData);        
+                writer.Write(textData);
             }
 
             string fileName = Path.GetFileNameWithoutExtension(filePath);
